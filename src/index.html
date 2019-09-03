@@ -17,7 +17,7 @@
 </body>
 <script type="module">
     import * as THREE from './js/lib/three.module.js';
-    import Stats from './js/lib/stats.module.js';
+    // import Stats from './js/lib/stats.module.js';
     import { OrbitControls } from './js/lib/OrbitControls.js';
     import { ConvexObjectBreaker } from './js/lib/ConvexObjectBreaker.js';
     import { ConvexBufferGeometry } from './js/lib/ConvexGeometry.js';
@@ -95,10 +95,10 @@
         light.shadow.mapSize.x = 1024;
         light.shadow.mapSize.y = 1024;
         scene.add( light );
-        stats = new Stats();
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.top = '0px';
-        container.appendChild( stats.domElement );
+        // stats = new Stats();
+        // stats.domElement.style.position = 'absolute';
+        // stats.domElement.style.top = '0px';
+        // container.appendChild( stats.domElement );
         //
         window.addEventListener( 'resize', onWindowResize, false );
     }
@@ -283,7 +283,7 @@
     function animate() {
         requestAnimationFrame( animate );
         render();
-        stats.update();
+        // stats.update();
     }
     function render() {
         var deltaTime = clock.getDelta();
