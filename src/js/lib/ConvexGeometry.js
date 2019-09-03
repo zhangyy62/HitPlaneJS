@@ -7,7 +7,7 @@ import {
 	Float32BufferAttribute,
 	Geometry
 } from "./three.min.js";
-import { ConvexHull } from "../math/ConvexHull.js";
+import { ConvexHull } from "./ConvexHull.js";
 
 // ConvexGeometry
 
