@@ -34,7 +34,7 @@ import {
 	Mesh,
 	Plane,
 	Vector3
-} from "./three.min.js";
+} from "./three.module.js";
 import { ConvexBufferGeometry } from "./ConvexGeometry.js";
 
 var ConvexObjectBreaker = function ( minSizeForBreak, smallDelta ) {

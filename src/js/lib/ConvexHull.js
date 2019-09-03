@@ -10,7 +10,7 @@ import {
 	Plane,
 	Triangle,
 	Vector3
-} from "./three.min.js";
+} from "./three.module.js";
 
 var ConvexHull = ( function () {
 
