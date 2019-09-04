@@ -274,10 +274,10 @@
             pos.multiplyScalar( 24 );
             ballBody.setLinearVelocity( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
         }, false );
-        window.addEventListener( 'touchstart', function ( event ) {
+        window.addEventListener( 'tap', function ( event ) {
             mouseCoords.set(
-                ( event.clientX / window.innerWidth ) * 2 - 1,
-                - ( event.clientY / window.innerHeight ) * 2 + 1
+                ( event.touches[0].pageX / window.innerWidth ) * 2 - 1,
+                - ( event.touches[0].pageY / window.innerHeight ) * 2 + 1
             );
             raycaster.setFromCamera( mouseCoords, camera );
             // Creates a ball and throws it
