@@ -274,7 +274,7 @@
             pos.multiplyScalar( 24 );
             ballBody.setLinearVelocity( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
         }, false );
-        window.addEventListener( 'tap', function ( event ) {
+        window.addEventListener( 'touchstart', function ( event ) {
             mouseCoords.set(
                 ( event.touches[0].pageX / window.innerWidth ) * 2 - 1,
                 - ( event.touches[0].pageY / window.innerHeight ) * 2 + 1
