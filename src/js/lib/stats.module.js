@@ -11,13 +11,6 @@ var Stats = function () {
     container.addEventListener('click', function (event) {
         event.preventDefault();
         showPanel(++mode % container.children.length);
-
-    }, false);
-
-    container.addEventListener('tap', function (event) {
-        event.preventDefault();
-        showPanel(++mode % container.children.length);
-
     }, false);
 
     //
