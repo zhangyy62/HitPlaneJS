@@ -124,7 +124,7 @@
         // Ground
         pos.set( 0, - 0.5, 0 );
         quat.set( 0, 0, 0, 1 );
-        var ground = createParalellepipedWithPhysics( 40, 1, 40, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
+        var ground = createParalellepipedWithPhysics( 400, 1, 400, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
         ground.receiveShadow = true;
         textureLoader.load( "textures/grid.png", function ( texture ) {
             texture.wrapS = THREE.RepeatWrapping;
@@ -149,6 +149,7 @@
         pos.set( 0, 10.2, 0 );
         quat.set( 0, 0, 0, 1 );
         createObject( bridgeMass, bridgeHalfExtents, pos, quat, createMaterial( 0xB3B865 ) );
+        createObject( bridgeMass, new THREE.Vector3( Math.random() * 10, Math.random() * 10, Math.random() * 1.5 ), pos, quat, createMaterial( 0xB3B865 ) );
         // Stones
         var stoneMass = 120;
         var stoneHalfExtents = new THREE.Vector3( 1, 2, 0.15 );
@@ -259,8 +260,8 @@
             );
             raycaster.setFromCamera( mouseCoords, camera );
             // Creates a ball and throws it
-            var ballMass = 35;
-            var ballRadius = 0.4;
+            var ballMass = 66;
+            var ballRadius = 1.4;
             var ball = new THREE.Mesh( new THREE.SphereBufferGeometry( ballRadius, 14, 10 ), ballMaterial );
             ball.castShadow = true;
             ball.receiveShadow = true;
@@ -271,7 +272,7 @@
             quat.set( 0, 0, 0, 1 );
             var ballBody = createRigidBody( ball, ballShape, ballMass, pos, quat );
             pos.copy( raycaster.ray.direction );
-            pos.multiplyScalar( 24 );
+            pos.multiplyScalar( 99 );
             ballBody.setLinearVelocity( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
         }, false );
         window.addEventListener( 'touchstart', function ( event ) {
