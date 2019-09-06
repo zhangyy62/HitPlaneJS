@@ -133,48 +133,48 @@
             ground.material.map = texture;
             ground.material.needsUpdate = true;
         } );
-        // Tower 1
-        var towerMass = 1000;
-        var towerHalfExtents = new THREE.Vector3( 2, 5, 2 );
-        pos.set( - 8, 5, 0 );
-        quat.set( 0, 0, 0, 1 );
-        createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xB03014 ) );
-        // Tower 2
-        pos.set( 8, 5, 0 );
-        quat.set( 0, 0, 0, 1 );
-        createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xB03214 ) );
-        //Bridge
-        var bridgeMass = 100;
-        var bridgeHalfExtents = new THREE.Vector3( 7, 0.2, 1.5 );
-        pos.set( 0, 10.2, 0 );
-        quat.set( 0, 0, 0, 1 );
-        createObject( bridgeMass, bridgeHalfExtents, pos, quat, createMaterial( 0xB3B865 ) );
-        createObject( bridgeMass, new THREE.Vector3( Math.random() * 10, Math.random() * 10, Math.random() * 1.5 ), pos, quat, createMaterial( 0xB3B865 ) );
+        // // Tower 1
+        // var towerMass = 1000;
+        // var towerHalfExtents = new THREE.Vector3( 2, 5, 2 );
+        // pos.set( - 8, 5, 0 );
+        // quat.set( 0, 0, 0, 1 );
+        // createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xB03014 ) );
+        // // Tower 2
+        // pos.set( 8, 5, 0 );
+        // quat.set( 0, 0, 0, 1 );
+        // createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xB03214 ) );
+        // //Bridge
+        // var bridgeMass = 100;
+        // var bridgeHalfExtents = new THREE.Vector3( 7, 0.2, 1.5 );
+        // pos.set( 0, 10.2, 0 );
+        // quat.set( 0, 0, 0, 1 );
+        // createObject( bridgeMass, bridgeHalfExtents, pos, quat, createMaterial( 0xB3B865 ) );
+        // createObject( bridgeMass, new THREE.Vector3( Math.random() * 10, Math.random() * 10, Math.random() * 1.5 ), pos, quat, createMaterial( 0xB3B865 ) );
         // Stones
         var stoneMass = 120;
-        var stoneHalfExtents = new THREE.Vector3( 1, 2, 0.15 );
-        var numStones = 8;
-        quat.set( 0, 0, 0, 1 );
+        var stoneHalfExtents = new THREE.Vector3( 10, 10, 1 );
+        var numStones = 10;
+        quat.set( 0, 0, 0, 5 );
         for ( var i = 0; i < numStones; i ++ ) {
-            pos.set( 0, 2, 15 * ( 0.5 - i / ( numStones + 1 ) ) );
+            pos.set( Math.random() * ( 1 << 5 ), 2, 15 * ( 1 - i / ( numStones + 1 ) ) );
             createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ) );
         }
-        // Mountain
-        var mountainMass = 860;
-        var mountainHalfExtents = new THREE.Vector3( 4, 5, 4 );
-        pos.set( 5, mountainHalfExtents.y * 0.5, - 7 );
-        quat.set( 0, 0, 0, 1 );
-        var mountainPoints = [];
-        mountainPoints.push( new THREE.Vector3( mountainHalfExtents.x, - mountainHalfExtents.y, mountainHalfExtents.z ) );
-        mountainPoints.push( new THREE.Vector3( - mountainHalfExtents.x, - mountainHalfExtents.y, mountainHalfExtents.z ) );
-        mountainPoints.push( new THREE.Vector3( mountainHalfExtents.x, - mountainHalfExtents.y, - mountainHalfExtents.z ) );
-        mountainPoints.push( new THREE.Vector3( - mountainHalfExtents.x, - mountainHalfExtents.y, - mountainHalfExtents.z ) );
-        mountainPoints.push( new THREE.Vector3( 0, mountainHalfExtents.y, 0 ) );
-        var mountain = new THREE.Mesh( new ConvexBufferGeometry( mountainPoints ), createMaterial( 0xB03814 ) );
-        mountain.position.copy( pos );
-        mountain.quaternion.copy( quat );
-        convexBreaker.prepareBreakableObject( mountain, mountainMass, new THREE.Vector3(), new THREE.Vector3(), true );
-        createDebrisFromBreakableObject( mountain );
+        // // Mountain
+        // var mountainMass = 860;
+        // var mountainHalfExtents = new THREE.Vector3( 4, 5, 4 );
+        // pos.set( 5, mountainHalfExtents.y * 0.5, - 7 );
+        // quat.set( 0, 0, 0, 1 );
+        // var mountainPoints = [];
+        // mountainPoints.push( new THREE.Vector3( mountainHalfExtents.x, - mountainHalfExtents.y, mountainHalfExtents.z ) );
+        // mountainPoints.push( new THREE.Vector3( - mountainHalfExtents.x, - mountainHalfExtents.y, mountainHalfExtents.z ) );
+        // mountainPoints.push( new THREE.Vector3( mountainHalfExtents.x, - mountainHalfExtents.y, - mountainHalfExtents.z ) );
+        // mountainPoints.push( new THREE.Vector3( - mountainHalfExtents.x, - mountainHalfExtents.y, - mountainHalfExtents.z ) );
+        // mountainPoints.push( new THREE.Vector3( 0, mountainHalfExtents.y, 0 ) );
+        // var mountain = new THREE.Mesh( new ConvexBufferGeometry( mountainPoints ), createMaterial( 0xB03814 ) );
+        // mountain.position.copy( pos );
+        // mountain.quaternion.copy( quat );
+        // convexBreaker.prepareBreakableObject( mountain, mountainMass, new THREE.Vector3(), new THREE.Vector3(), true );
+        // createDebrisFromBreakableObject( mountain );
     }
     function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material ) {
         var object = new THREE.Mesh( new THREE.BoxBufferGeometry( sx, sy, sz, 1, 1, 1 ), material );
@@ -252,51 +252,42 @@
         color = color || createRandomColor();
         return new THREE.MeshPhongMaterial( { color: color } );
     }
+    function innerInitInput() {
+        raycaster.setFromCamera( mouseCoords, camera );
+        // Creates a ball and throws it
+        var ballMass = 90;
+        var ballRadius = 0.6;
+        var ball = new THREE.Mesh( new THREE.SphereBufferGeometry( ballRadius, 14, 10 ), ballMaterial );
+        ball.castShadow = true;
+        ball.receiveShadow = true;
+        var ballShape = new Ammo.btSphereShape( ballRadius );
+        ballShape.setMargin( margin );
+        pos.copy( raycaster.ray.direction );
+        pos.add( raycaster.ray.origin );
+        quat.set( 0, 0, 0, 1 );
+        var ballBody = createRigidBody( ball, ballShape, ballMass, pos, quat );
+        pos.copy( raycaster.ray.direction );
+        pos.multiplyScalar( 400 );
+        ballBody.setLinearVelocity( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
+    }
     function initInput() {
-        window.addEventListener( 'mousedown', function ( event ) {
-            mouseCoords.set(
-                ( event.clientX / window.innerWidth ) * 2 - 1,
-                - ( event.clientY / window.innerHeight ) * 2 + 1
-            );
-            raycaster.setFromCamera( mouseCoords, camera );
-            // Creates a ball and throws it
-            var ballMass = 66;
-            var ballRadius = 1.4;
-            var ball = new THREE.Mesh( new THREE.SphereBufferGeometry( ballRadius, 14, 10 ), ballMaterial );
-            ball.castShadow = true;
-            ball.receiveShadow = true;
-            var ballShape = new Ammo.btSphereShape( ballRadius );
-            ballShape.setMargin( margin );
-            pos.copy( raycaster.ray.direction );
-            pos.add( raycaster.ray.origin );
-            quat.set( 0, 0, 0, 1 );
-            var ballBody = createRigidBody( ball, ballShape, ballMass, pos, quat );
-            pos.copy( raycaster.ray.direction );
-            pos.multiplyScalar( 99 );
-            ballBody.setLinearVelocity( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
-        }, false );
-        window.addEventListener( 'touchstart', function ( event ) {
-            mouseCoords.set(
-                ( event.touches[0].pageX / window.innerWidth ) * 2 - 1,
-                - ( event.touches[0].pageY / window.innerHeight ) * 2 + 1
-            );
-            raycaster.setFromCamera( mouseCoords, camera );
-            // Creates a ball and throws it
-            var ballMass = 35;
-            var ballRadius = 0.4;
-            var ball = new THREE.Mesh( new THREE.SphereBufferGeometry( ballRadius, 14, 10 ), ballMaterial );
-            ball.castShadow = true;
-            ball.receiveShadow = true;
-            var ballShape = new Ammo.btSphereShape( ballRadius );
-            ballShape.setMargin( margin );
-            pos.copy( raycaster.ray.direction );
-            pos.add( raycaster.ray.origin );
-            quat.set( 0, 0, 0, 1 );
-            var ballBody = createRigidBody( ball, ballShape, ballMass, pos, quat );
-            pos.copy( raycaster.ray.direction );
-            pos.multiplyScalar( 24 );
-            ballBody.setLinearVelocity( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
-        }, false );
+        if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+            window.addEventListener( 'touchstart', function ( event ) {
+                mouseCoords.set(
+                    ( event.touches[0].pageX / window.innerWidth ) * 2 - 1,
+                    - ( event.touches[0].pageY / window.innerHeight ) * 2 + 1
+                );
+                innerInitInput();
+            }, false );
+        } else {
+            window.addEventListener( 'mousedown', function ( event ) { 
+                mouseCoords.set(
+                    ( event.clientX / window.innerWidth ) * 2 - 1,
+                    - ( event.clientY / window.innerHeight ) * 2 + 1
+                );
+                innerInitInput();
+            }, false );
+        }
     }
     function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
