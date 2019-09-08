@@ -17,12 +17,12 @@
 </body>
 <script type="module">
     import * as THREE from './js/lib/three.module.js';
-    // import Stats from './js/lib/stats.module.js';
+    import Stats from './js/lib/stats.module.js';
     import { OrbitControls } from './js/lib/OrbitControls.js';
     import { ConvexObjectBreaker } from './js/lib/ConvexObjectBreaker.js';
     import { ConvexBufferGeometry } from './js/lib/ConvexGeometry.js';
     // - Global variables -
-    // Graphics variables
+    var cockpit, wing, engine, propeller, tail;
     var container, stats;
     var camera, controls, scene, renderer;
     var textureLoader;
@@ -52,6 +52,18 @@
     var numObjectsToRemove = 0;
     var impactPoint = new THREE.Vector3();
     var impactNormal = new THREE.Vector3();
+    // Colors
+    var Colors = {
+        red:0xf25346,
+        white:0xd8d0d1,
+        brown:0x59332e,
+        pink:0xF5986E,
+        brownDark:0x23190f,
+        blue:0x68c3c0,
+    };
+    var mesh, propeller;
+    var bodyList = [];
+
     // - Main code -
     Ammo().then( function ( AmmoLib ) {
         Ammo = AmmoLib;
@@ -70,7 +82,7 @@
         camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 2000 );
         scene = new THREE.Scene();
         scene.background = new THREE.Color( 0xbfd1e5 );
-        camera.position.set( - 14, 8, 16 );
+        camera.position.set( 100, -800, 1000 );
         renderer = new THREE.WebGLRenderer();
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( window.innerWidth, window.innerHeight );
@@ -95,11 +107,11 @@
         light.shadow.mapSize.x = 1024;
         light.shadow.mapSize.y = 1024;
         scene.add( light );
-        // stats = new Stats();
-        // stats.domElement.style.position = 'absolute';
-        // stats.domElement.style.top = '0px';
-        // container.appendChild( stats.domElement );
-        //
+        stats = new Stats();
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.top = '0px';
+        container.appendChild( stats.domElement );
+        
         window.addEventListener( 'resize', onWindowResize, false );
     }
     function initPhysics() {
@@ -121,74 +133,97 @@
         createDebrisFromBreakableObject( object );
     }
     function createObjects() {
-        // Ground
-        pos.set( 0, - 0.5, 0 );
-        quat.set( 0, 0, 0, 1 );
-        var ground = createParalellepipedWithPhysics( 400, 1, 400, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
-        ground.receiveShadow = true;
-        textureLoader.load( "textures/grid.png", function ( texture ) {
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set( 40, 40 );
-            ground.material.map = texture;
-            ground.material.needsUpdate = true;
-        } );
-        // // Tower 1
-        // var towerMass = 1000;
-        // var towerHalfExtents = new THREE.Vector3( 2, 5, 2 );
-        // pos.set( - 8, 5, 0 );
-        // quat.set( 0, 0, 0, 1 );
-        // createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xB03014 ) );
-        // // Tower 2
-        // pos.set( 8, 5, 0 );
-        // quat.set( 0, 0, 0, 1 );
-        // createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xB03214 ) );
-        // //Bridge
-        // var bridgeMass = 100;
-        // var bridgeHalfExtents = new THREE.Vector3( 7, 0.2, 1.5 );
-        // pos.set( 0, 10.2, 0 );
-        // quat.set( 0, 0, 0, 1 );
-        // createObject( bridgeMass, bridgeHalfExtents, pos, quat, createMaterial( 0xB3B865 ) );
-        // createObject( bridgeMass, new THREE.Vector3( Math.random() * 10, Math.random() * 10, Math.random() * 1.5 ), pos, quat, createMaterial( 0xB3B865 ) );
-        // Stones
-        var stoneMass = 120;
-        var stoneHalfExtents = new THREE.Vector3( 10, 10, 1 );
-        var numStones = 10;
         quat.set( 0, 0, 0, 5 );
-        for ( var i = 0; i < numStones; i ++ ) {
-            pos.set( Math.random() * ( 1 << 5 ), 2, 15 * ( 1 - i / ( numStones + 1 ) ) );
-            createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ) );
-        }
-        // // Mountain
-        // var mountainMass = 860;
-        // var mountainHalfExtents = new THREE.Vector3( 4, 5, 4 );
-        // pos.set( 5, mountainHalfExtents.y * 0.5, - 7 );
-        // quat.set( 0, 0, 0, 1 );
-        // var mountainPoints = [];
-        // mountainPoints.push( new THREE.Vector3( mountainHalfExtents.x, - mountainHalfExtents.y, mountainHalfExtents.z ) );
-        // mountainPoints.push( new THREE.Vector3( - mountainHalfExtents.x, - mountainHalfExtents.y, mountainHalfExtents.z ) );
-        // mountainPoints.push( new THREE.Vector3( mountainHalfExtents.x, - mountainHalfExtents.y, - mountainHalfExtents.z ) );
-        // mountainPoints.push( new THREE.Vector3( - mountainHalfExtents.x, - mountainHalfExtents.y, - mountainHalfExtents.z ) );
-        // mountainPoints.push( new THREE.Vector3( 0, mountainHalfExtents.y, 0 ) );
-        // var mountain = new THREE.Mesh( new ConvexBufferGeometry( mountainPoints ), createMaterial( 0xB03814 ) );
-        // mountain.position.copy( pos );
-        // mountain.quaternion.copy( quat );
-        // convexBreaker.prepareBreakableObject( mountain, mountainMass, new THREE.Vector3(), new THREE.Vector3(), true );
-        // createDebrisFromBreakableObject( mountain );
+
+        // parent node
+        mesh = new THREE.Object3D();
+
+        // cabin
+        cockpit = new THREE.Mesh(
+            new THREE.BoxBufferGeometry(60,50,50), 
+            new THREE.MeshPhongMaterial({color:Colors.red, flatShading:THREE.FlatShading}),
+        );
+
+        cockpit.castShadow = true;
+        cockpit.receiveShadow = true;
+        mesh.add(cockpit);
+        convexBreaker.prepareBreakableObject(cockpit, 500, new THREE.Vector3(), new THREE.Vector3(), true );
+        createDebrisFromBreakableObject( cockpit, 'cockpit' );
+
+        // engine
+        engine = new THREE.Mesh(
+            new THREE.BoxBufferGeometry(20,50,50), 
+            new THREE.MeshPhongMaterial({color:Colors.white, flatShading:THREE.FlatShading})
+        );
+
+        engine.position.x = 40;
+        engine.castShadow = true;
+        engine.receiveShadow = true;
+        mesh.add(engine);
+        convexBreaker.prepareBreakableObject( engine, 500, new THREE.Vector3(), new THREE.Vector3(), true );
+        createDebrisFromBreakableObject(engine, 'engine');
+
+        // tail
+        tail = new THREE.Mesh(
+            new THREE.BoxBufferGeometry(15,20,5), 
+            new THREE.MeshPhongMaterial({color:Colors.red, flatShading:THREE.FlatShading})
+        );
+
+        tail.position.set(-35,25,0);
+        tail.castShadow = true;
+        tail.receiveShadow = true;
+        mesh.add(tail);
+        convexBreaker.prepareBreakableObject( tail, 500, new THREE.Vector3(), new THREE.Vector3(), true );
+        createDebrisFromBreakableObject(tail, 'tail');
+
+        // wing
+        wing = new THREE.Mesh(
+            new THREE.BoxBufferGeometry(40,8,150), 
+            new THREE.MeshPhongMaterial({color:Colors.red, flatShading:THREE.FlatShading})
+        );
+
+        wing.castShadow = true;
+        wing.receiveShadow = true;
+        mesh.add(wing);
+        convexBreaker.prepareBreakableObject( wing, 500, new THREE.Vector3(), new THREE.Vector3(), true );
+        createDebrisFromBreakableObject(wing, 'wing');
+
+        // propeller
+        propeller = new THREE.Mesh(
+            new THREE.BoxBufferGeometry(20,10,10), 
+            new THREE.MeshPhongMaterial({color:Colors.brown, flatShading:THREE.FlatShading})
+        );
+
+        propeller.castShadow = true;
+        propeller.receiveShadow = true;
+        propeller.position.set(50,0,0);
+        mesh.add(propeller);
+        convexBreaker.prepareBreakableObject(propeller, 500, new THREE.Vector3(), new THREE.Vector3(), true );
+        createDebrisFromBreakableObject( propeller, 'propeller' );
+
+        // blades
+        var blade = new THREE.Mesh(
+            new THREE.BoxBufferGeometry(1,100,20), 
+            new THREE.MeshPhongMaterial({
+                color:Colors.brownDark, flatShading:THREE.FlatShading
+            })
+        );
+
+        blade.position.set(50,0,0);
+        blade.castShadow = true;
+        blade.receiveShadow = true;
+        mesh.add(blade);
+        convexBreaker.prepareBreakableObject(blade, 500, new THREE.Vector3(), new THREE.Vector3(), true );
+        createDebrisFromBreakableObject( blade, 'blade' );
+
+       
     }
-    function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material ) {
-        var object = new THREE.Mesh( new THREE.BoxBufferGeometry( sx, sy, sz, 1, 1, 1 ), material );
-        var shape = new Ammo.btBoxShape( new Ammo.btVector3( sx * 0.5, sy * 0.5, sz * 0.5 ) );
-        shape.setMargin( margin );
-        createRigidBody( object, shape, mass, pos, quat );
-        return object;
-    }
-    function createDebrisFromBreakableObject( object ) {
+    function createDebrisFromBreakableObject( object, name ) {
         object.castShadow = true;
         object.receiveShadow = true;
         var shape = createConvexHullPhysicsShape( object.geometry.attributes.position.array );
         shape.setMargin( margin );
-        var body = createRigidBody( object, shape, object.userData.mass, null, null, object.userData.velocity, object.userData.angularVelocity );
+        var body = createRigidBody( object, shape, object.userData.mass, null, null, object.userData.velocity, object.userData.angularVelocity, name );
         // Set pointer back to the three object only in the debris objects
         var btVecUserData = new Ammo.btVector3( 0, 0, 0 );
         btVecUserData.threeObject = object;
@@ -207,7 +242,7 @@
         }
         return shape;
     }
-    function createRigidBody( object, physicsShape, mass, pos, quat, vel, angVel ) {
+    function createRigidBody( object, physicsShape, mass, pos, quat, vel, angVel, name ) {
         if ( pos ) {
             object.position.copy( pos );
         } else {
@@ -221,28 +256,29 @@
         var transform = new Ammo.btTransform();
         transform.setIdentity();
         transform.setOrigin( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
-        transform.setRotation( new Ammo.btQuaternion( quat.x, quat.y, quat.z, quat.w ) );
-        var motionState = new Ammo.btDefaultMotionState( transform );
+        transform.setRotation(new Ammo.btQuaternion( quat.x, quat.y, quat.z, quat.w ));
+        var motionState = new Ammo.btDefaultMotionState(transform);
         var localInertia = new Ammo.btVector3( 0, 0, 0 );
         physicsShape.calculateLocalInertia( mass, localInertia );
         var rbInfo = new Ammo.btRigidBodyConstructionInfo( mass, motionState, physicsShape, localInertia );
         var body = new Ammo.btRigidBody( rbInfo );
-        body.setFriction( 0.5 );
-        if ( vel ) {
+        body.setFriction(0.5);
+        if (vel) {
             body.setLinearVelocity( new Ammo.btVector3( vel.x, vel.y, vel.z ) );
         }
-        if ( angVel ) {
+        if (angVel) {
             body.setAngularVelocity( new Ammo.btVector3( angVel.x, angVel.y, angVel.z ) );
         }
         object.userData.physicsBody = body;
         object.userData.collided = false;
         scene.add( object );
-        if ( mass > 0 ) {
+        if (mass > 0 && !name) {
             rigidBodies.push( object );
             // Disable deactivation
             body.setActivationState( 4 );
         }
-        physicsWorld.addRigidBody( body );
+        physicsWorld.addRigidBody(body);
+        bodyList.push({object, body, quat, pos, name});
         return body;
     }
     function createRandomColor() {
@@ -255,9 +291,9 @@
     function innerInitInput() {
         raycaster.setFromCamera( mouseCoords, camera );
         // Creates a ball and throws it
-        var ballMass = 90;
-        var ballRadius = 0.6;
-        var ball = new THREE.Mesh( new THREE.SphereBufferGeometry( ballRadius, 14, 10 ), ballMaterial );
+        var ballMass = 500;
+        var ballRadius = 10;
+        var ball = new THREE.Mesh(new THREE.SphereBufferGeometry( ballRadius, 14, 10 ), ballMaterial);
         ball.castShadow = true;
         ball.receiveShadow = true;
         var ballShape = new Ammo.btSphereShape( ballRadius );
@@ -265,9 +301,9 @@
         pos.copy( raycaster.ray.direction );
         pos.add( raycaster.ray.origin );
         quat.set( 0, 0, 0, 1 );
-        var ballBody = createRigidBody( ball, ballShape, ballMass, pos, quat );
+        var ballBody = createRigidBody( ball, ballShape, ballMass, pos, quat);
         pos.copy( raycaster.ray.direction );
-        pos.multiplyScalar( 400 );
+        pos.multiplyScalar(9000);
         ballBody.setLinearVelocity( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
     }
     function initInput() {
@@ -296,8 +332,28 @@
     }
     function animate() {
         requestAnimationFrame( animate );
+        bodyList.forEach(x => {
+
+            var rotation = x.body.getWorldTransform(transformAux1).getRotation();
+            var origin = x.body.getWorldTransform(transformAux1).getOrigin();
+            if (x.name === 'blade') {
+                x.object.rotation.x += 0.8;
+            }
+
+            x.object.position.set( 
+                x.object.position.x += 0.8,
+                x.object.position.y,
+                x.object.position.z
+            );
+            x.body.getWorldTransform(transformAux1).setOrigin(new Ammo.btVector3(
+                x.object.position.x,
+                x.object.position.y,
+                x.object.position.z)
+            );
+            x.object.userData.physicsBody = x.body
+        });
+        stats.update();
         render();
-        // stats.update();
     }
     function render() {
         var deltaTime = clock.getDelta();
@@ -327,7 +383,7 @@
             var rb1 = Ammo.castObject( contactManifold.getBody1(), Ammo.btRigidBody );
             var threeObject0 = Ammo.castObject( rb0.getUserPointer(), Ammo.btVector3 ).threeObject;
             var threeObject1 = Ammo.castObject( rb1.getUserPointer(), Ammo.btVector3 ).threeObject;
-            if ( ! threeObject0 && ! threeObject1 ) {
+            if ( !threeObject0 && !threeObject1 ) {
                 continue;
             }
             var userData0 = threeObject0 ? threeObject0.userData : null;
@@ -336,7 +392,7 @@
             var breakable1 = userData1 ? userData1.breakable : false;
             var collided0 = userData0 ? userData0.collided : false;
             var collided1 = userData1 ? userData1.collided : false;
-            if ( ( ! breakable0 && ! breakable1 ) || ( collided0 && collided1 ) ) {
+            if ( ( !breakable0 && !breakable1 ) || ( collided0 && collided1 ) ) {
                 continue;
             }
             var contact = false;
@@ -357,10 +413,10 @@
                 }
             }
             // If no point has contact, abort
-            if ( ! contact ) continue;
+            if ( !contact ) continue;
             // Subdivision
             var fractureImpulse = 250;
-            if ( breakable0 && ! collided0 && maxImpulse > fractureImpulse ) {
+            if ( breakable0 && !collided0 && maxImpulse > fractureImpulse ) {
                 var debris = convexBreaker.subdivideByImpact( threeObject0, impactPoint, impactNormal, 1, 2, 1.5 );
                 var numObjects = debris.length;
                 for ( var j = 0; j < numObjects; j ++ ) {
@@ -374,7 +430,7 @@
                 objectsToRemove[ numObjectsToRemove ++ ] = threeObject0;
                 userData0.collided = true;
             }
-            if ( breakable1 && ! collided1 && maxImpulse > fractureImpulse ) {
+            if ( breakable1 && !collided1 && maxImpulse > fractureImpulse ) {
                 var debris = convexBreaker.subdivideByImpact( threeObject1, impactPoint, impactNormal, 1, 2, 1.5 );
                 var numObjects = debris.length;
                 for ( var j = 0; j < numObjects; j ++ ) {
