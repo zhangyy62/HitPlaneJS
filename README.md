@@ -5,7 +5,7 @@ a simple demo that a airplane is running and can have a collision with bullet.
 #### URL
 https://sparkxxxxxx.github.io/HitPlaneJS/src/index.html
 #### QRCode
-![QRCode](src/assets/QRCode.png)  
+![QRCode](https://github.com/sparkxxxxxx/HitPlaneJS/blob/master/src/assets/QRCode.png)  
 
 ## Run
 >>>
